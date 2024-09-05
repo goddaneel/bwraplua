@@ -1,0 +1,13 @@
+#!/bin/bash
+
+_ga_args_bwraplua=(
+        ,q, ,c, ,y,
+        ,na "3_vlc"
+        ,ex "vlc"
+        ,re "03_lvl3_vlc"
+        ,co "vlc"
+        ,c ${@}
+)
+#       #
+bwraplua.lua ${_ga_args_bwraplua[@]}
+

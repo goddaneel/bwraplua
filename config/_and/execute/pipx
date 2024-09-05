@@ -1,0 +1,13 @@
+#!/bin/bash
+
+_ga_args_bwraplua=(
+        ,q, ,c, ,y,
+        ,na "3_pipx"
+        ,ex "pipx"
+        ,re "03_lvl4_pip"
+        ,co "/usr/bin/pipx"
+        ,c ${@}
+)
+#       #
+bwraplua.lua ${_ga_args_bwraplua[@]}
+

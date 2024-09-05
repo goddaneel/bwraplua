@@ -1,0 +1,13 @@
+#!/bin/bash
+
+_ga_args_bwraplua=(
+        ,q, ,c, ,y,
+        ,na "3_libreoffice"
+        ,ex "libreoffice"
+        ,re "03_lvl3_libreoffice"
+        ,co "libreoffice"
+        ,c ${@}
+)
+#       #
+bwraplua.lua ${_ga_args_bwraplua[@]}
+
