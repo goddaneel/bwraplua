@@ -20,7 +20,5 @@ _g1_pack_listr = {
 -- data
 _g1_pack_data = {
         [[--bind "]].._ls_packvar_bwraphome.._gs_lastvar_name..[[/" "${HOME}/"]],
-        [[--dir "${HOME}/_data/"]],
-        [[--dir "${HOME}/_file/"]],
 }
 
