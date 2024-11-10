@@ -1,0 +1,29 @@
+#!/bin/bash
+
+
+### default
+## source
+source "/_and/config/bwraplua/default/0_default"
+
+
+### script
+## variable
+declare -g _gs_moderun_lock="only"
+declare -g _gs_modex11_display="space"
+declare -g _gs_modex11_xserver="xephyr"
+
+## mode
+if [[ "${0##*/}" == "flatplyr1_xephyr" ]] ; then
+        declare -g _gs_execname="flatplyr1_xephyr" ;
+elif [[ "${0##*/}" == "flatplyr1" ]] ; then
+        declare -g _gs_execname="flatplyr1" ;
+else
+        declare -g _gs_execname="2_flatplyr1_xephyr" ;
+fi
+
+## source
+source "${_ES_bwraplua_conf}/default/1_source_flatplyr1"
+
+## loadover
+_gF_loadover
+

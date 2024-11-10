@@ -1,0 +1,43 @@
+#!/bin/bash
+
+
+### default
+## source
+source "/_and/config/bwraplua/default/0_default"
+
+
+### bwrapcheck
+## source
+source "${_ES_bwraplua_conf}/default/1_source_bwrapcheck"
+
+
+### xephyrback
+## variable
+if [[ -z "${_es_wmname}" ]] ; then
+        declare -x _es_wmname="xephyr ${_es_display}" ;
+fi
+
+## argument
+declare -ga "_ga_args_xephyrback"
+_ga_args_xephyrback=(
+        -title "${_es_wmname}"
+)
+
+## fork
+'/bin/bash' "${_ES_bwraplua_conf}/default/1_fork_xephyrback" ${_ga_args_xephyrback[@]}
+
+
+### icewm
+## argument
+declare -ga "_ga_args_bwraplua"
+_ga_args_bwraplua=(
+        ,q, ,c, ,y,
+        ,re "03_lvl8_icewm"
+        ,co '/usr/bin/icewm'
+        ,c "--theme=Infadel2"
+        ,c ${@}
+)
+
+## execute
+"${_ES_bwraplua_usrbin}" ${_ga_args_bwraplua[@]}
+

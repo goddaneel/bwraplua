@@ -1,0 +1,56 @@
+#!/bin/bash
+
+
+### init
+## variable
+declare -g _gs_0_exec="${0##*"/"}"
+declare -g _gs_lyrmode=",,e"
+
+## check
+if [[ "${_gs_0_exec}" == "${_gs_execname}" ]] ; then
+        declare -g _gs_0_exec="${1:?}" || exit ;
+        declare -g _gs_lyrmode=",,n" ;
+        shift 1 ;
+fi
+
+## argument
+declare -ga "_ga_arg1_bwraplua"
+_ga_arg1_bwraplua=(
+        ,co '/bin/bash'
+        ,c "${_ES_bwraplua_conf}/default/2_bwraplyr2_and"
+        ,c "${_gs_0_exec}"
+)
+
+## check
+if [[ ! -r "${_gs_confpath}${_gs_0_exec}_lyr2" ]] ; then
+        declare -g _gs_arg1_bwraplua=${_ga_arg1_bwraplua[@]} ;
+        declare -g _gs_lyrmode=",,e" ;
+fi
+
+
+### addmode
+## source
+source "${_ES_bwraplua_conf}/default/1_source_addmode"
+
+
+### bwraplua
+## argument
+declare -ga "_ga_args_bwraplyr1"
+#       #
+declare -ga "_ga_args_bwraplua"
+_ga_args_bwraplua=(
+        ,q, ,c, ,y,
+        ,ex "${_gs_0_exec}"
+        ,re "00_pre_lyr1"
+        ,r "00_post_lyr1"
+        ,co '/bin/bash'
+        ,c "${_gs_confpath}${_gs_0_exec}_lyr2"
+        ,,n ${_ga_args_bwraplyr1[@]}
+        ,,n ${_gs_arg1_bwraplua}
+        ,,n "${_gs_lyrmode}"
+        ,c ${@}
+)
+
+## execute
+"${_ES_bwraplua_usrbin}" ${_ga_args_bwraplua[@]}
+

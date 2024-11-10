@@ -1,0 +1,21 @@
+#!/bin/bash
+
+
+### default
+## source
+source "/_and/config/bwraplua/default/0_default"
+
+
+### bwraplua
+## argument
+declare -ga "_ga_args_bwraplua"
+_ga_args_bwraplua=(
+        ,q, ,c, ,y,
+        ,re "03_lvl6_xpra"
+        ,co '/usr/bin/xpra'
+        ,c ${@}
+)
+
+## execute
+"${_ES_bwraplua_usrbin}" ${_ga_args_bwraplua[@]}
+
