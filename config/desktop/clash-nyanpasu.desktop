@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name={Bwraplyr1} Clash Nyanpasu
+Icon=clash-nyanpasu
+Exec="/_and/config/bwraplua/default/2_bwraplyr1_and" "clash-nyanpasu"
+

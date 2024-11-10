@@ -1,0 +1,46 @@
+#!/bin/bash
+
+
+### bwrapcheck
+## source
+source "${_ES_bwraplua_conf}/default/1_source_bwrapcheck"
+
+
+### init
+## variable
+declare -g _gs_0_exec="${0##*"/"}"
+declare -g _gs_lyrmode=",,n"
+
+## check
+if [[ "${_gs_0_exec}" == "${_gs_execname}" ]] ; then
+        declare -g _gs_0_exec="${1:?}" || exit ;
+        shift 1 ;
+fi
+
+
+### addmode
+## variable
+declare _gs_moderun_type="bwraplyr2"
+
+## source
+source "${_ES_bwraplua_conf}/default/1_source_addmode"
+
+
+### bwraplua
+## argument
+declare -ga "_ga_args_bwraplyr2"
+#       #
+declare -ga "_ga_args_bwraplua"
+_ga_args_bwraplua=(
+        ,q, ,c, ,y,
+        ,ex "${_gs_0_exec}"
+        ,re "03_lyr2_${_gs_0_exec}"
+        ,co "${_gs_execpath}${_gs_0_exec}"
+        ,,n ${_ga_args_bwraplyr2[@]}
+        ,,n "${_gs_lyrmode}"
+        ,c ${@}
+)
+
+## execute
+"${_ES_bwraplua_usrbin}" ${_ga_args_bwraplua[@]}
+

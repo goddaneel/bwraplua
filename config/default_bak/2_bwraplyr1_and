@@ -1,0 +1,17 @@
+#!/bin/bash
+
+## variable
+declare -g _gs_confpath="/_and/config/bwraplua/execute/"
+declare -g _gs_execname="2_bwraplyr1_and"
+
+## check
+if [[ "${0##*/}" == "bwraplyr1_and" ]] ; then
+        declare -g _gs_execname="bwraplyr1_and" ;
+fi
+
+## argument
+declare -a "_ga_args_bwraplyr1"
+
+## source
+source "/_and/config/bwraplua/default/1_source_bwraplyr1"
+

@@ -1,0 +1,29 @@
+#!/bin/bash
+
+## variable
+if [[ -n "${_es_display}" ]] ; then
+        declare -g _gs_display="${_es_display}" ;
+else
+        declare -g "_gs_display" ;
+fi
+
+## argument
+declare -ga "_ga_args_xephyr"
+_ga_args_xephyr=(
+        "${_gs_display}"
+        -br
+        -resizeable
+        -noreset
+        -screen "1280x720"
+        -dpi "125"
+        ${@}
+)
+
+## execute
+'/usr/bin/Xephyr' ${_ga_args_xephyr[@]} &
+
+## wait
+while [[ ! -r "/tmp/.X11-unix/X${_gs_display##*:}" ]] ; do
+        '/usr/bin/sleep' "0.1s" ;
+done
+

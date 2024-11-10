@@ -1,0 +1,39 @@
+#!/bin/bash
+
+
+### bwrapcheck
+## source
+source "/_and/config/bwraplua/default/1_source_bwrapcheck"
+
+
+### xdg-dbus-proxy
+## fork
+'/bin/bash' "/_and/config/bwraplua/default/1_fork_dbusproxy" ${_ga_args_dbusproxy[@]}
+
+
+### bwraplua
+## variable
+declare -g _gs_0_exec="${0##*/}"
+declare -g _gs_lyrmode=",,n"
+
+## check
+if [[ "${_gs_0_exec}" == "${_gs_execname}" ]] ; then
+        declare -g _gs_0_exec="${1:?}" || exit ;
+        shift 1 ;
+fi
+
+## argument
+declare -g "_ga_args_bwraplua"
+_ga_args_bwraplua=(
+        ,q, ,c, ,y,
+        ,ex "${_gs_0_exec}"
+        ,re "03_lyr2_${_gs_0_exec}"
+        ,co "${_gs_execpath}${_gs_0_exec}"
+        ,,n ${_ga_args_bwraplyr2[@]}
+        ,,n "${_gs_lyrmode}"
+        ,c ${@}
+)
+
+## execute
+exec "/_and/program/bwraplua/_usr/bin/bwraplua.lua" ${_ga_args_bwraplua[@]}
+

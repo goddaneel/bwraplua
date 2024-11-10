@@ -1,0 +1,16 @@
+#!/bin/bash
+
+## variable
+declare -g _gs_execpath="/usr/bin/"
+declare -g _gs_execname="2_bwraplyr2_and"
+
+## argument
+declare -a "_ga_args_bwraplyr2"
+declare -a "_ga_args_dbusproxy"
+_ga_args_dbusproxy=(
+        --talk="org.kde.StatusNotifierWatcher"
+)
+
+## source
+source "/_and/config/bwraplua/default/1_source_bwraplyr2"
+
