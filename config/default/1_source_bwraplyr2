@@ -3,12 +3,17 @@
 
 ### bwrapcheck
 ## source
-source "${_ES_bwraplua_conf}/default/1_source_bwrapcheck"
+source "/_and/config/bwraplua/default/1_source_bwrapcheck"
 
 
-### init
+### xdg-dbus-proxy
+## fork
+'/bin/bash' "/_and/config/bwraplua/default/1_fork_dbusproxy" ${_ga_args_dbusproxy[@]}
+
+
+### bwraplua
 ## variable
-declare -g _gs_0_exec="${0##*"/"}"
+declare -g _gs_0_exec="${0##*/}"
 declare -g _gs_lyrmode=",,n"
 
 ## check
@@ -17,20 +22,8 @@ if [[ "${_gs_0_exec}" == "${_gs_execname}" ]] ; then
         shift 1 ;
 fi
 
-
-### addmode
-## variable
-declare _gs_moderun_type="bwraplyr2"
-
-## source
-source "${_ES_bwraplua_conf}/default/1_source_addmode"
-
-
-### bwraplua
 ## argument
-declare -ga "_ga_args_bwraplyr2"
-#       #
-declare -ga "_ga_args_bwraplua"
+declare -g "_ga_args_bwraplua"
 _ga_args_bwraplua=(
         ,q, ,c, ,y,
         ,ex "${_gs_0_exec}"
@@ -42,5 +35,5 @@ _ga_args_bwraplua=(
 )
 
 ## execute
-"${_ES_bwraplua_usrbin}" ${_ga_args_bwraplua[@]}
+exec "/_and/program/bwraplua/_usr/bin/bwraplua.lua" ${_ga_args_bwraplua[@]}
 

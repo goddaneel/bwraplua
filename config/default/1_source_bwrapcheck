@@ -4,7 +4,7 @@
 ### proc
 ## check
 if [[ "$(realpath -e "/proc/1/exe")" != "/usr/bin/bwrap" ]] ; then
-        _gF_inittool_notify "ERROR" "Not running in bwrap." ;
+        echo -e "\033[31m ERROR: Not running in bwrap. \033[0m" ;
         exit 127 ;
 fi
 
@@ -12,12 +12,12 @@ fi
 ### _bwrap
 ## check
 if [[ ! -d "/_bwrap/and" ]] ; then
-        _gF_inittool_notify "ERROR" "/_bwrap/and does not exist." ;
+        echo -e "\033[33m WARNING: /_bwrap/and does not exist. \033[0m" ;
         exit 1 ;
 fi
 #       #
 if [[ ! -d "/_bwrap/own/${USER}" ]] ; then
-        _gF_inittool_notify "ERROR" "/_bwrap/own/${USER} does not exist." ;
+        echo -e "\033[33m WARNING: /_bwrap/own/${USER} does not exist. \033[0m" ;
         exit 1 ;
 fi
 

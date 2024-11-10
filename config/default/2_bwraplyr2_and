@@ -1,27 +1,16 @@
 #!/bin/bash
 
-
-### default
-## source
-source "/_and/config/bwraplua/default/0_default"
-
-
-### script
 ## variable
 declare -g _gs_execpath="/usr/bin/"
 declare -g _gs_execname="2_bwraplyr2_and"
-declare -g _gs_moderun_lock="only"
-declare -g _gs_modebus_proxy="on"
 
 ## argument
-declare -ga "_ga_args_dbusproxy"
+declare -a "_ga_args_bwraplyr2"
+declare -a "_ga_args_dbusproxy"
 _ga_args_dbusproxy=(
         --talk="org.kde.StatusNotifierWatcher"
 )
 
 ## source
-source "${_ES_bwraplua_conf}/default/1_source_bwraplyr2"
-
-## loadover
-_gF_loadover
+source "/_and/config/bwraplua/default/1_source_bwraplyr2"
 

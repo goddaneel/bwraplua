@@ -8,7 +8,7 @@ mkdir "/_bwrap/own/${USER}/dbusproxy" || exit
 
 ### xdg-dbus-proxy
 ## argument
-declare -ga "_ga_args_xdgdbusproxy"
+declare -a "_ga_args_xdgdbusproxy"
 _ga_args_xdgdbusproxy=(
         ${DBUS_SESSION_BUS_ADDRESS}
         "/_bwrap/own/${USER}/dbusproxy/bus"
@@ -18,10 +18,12 @@ _ga_args_xdgdbusproxy=(
 )
 
 ## execute
-'/usr/bin/xdg-dbus-proxy' ${_ga_args_xdgdbusproxy[@]} &
+"/usr/bin/xdg-dbus-proxy" ${_ga_args_xdgdbusproxy[@]} &
 
-## wait
+
+### while
+## execute
 while [[ -r "/_bwrap/own/${USER}/dbusproxy/bus" ]] ; do
-        sleep "0.15s" ;
+        sleep "0.2s" ;
 done
 

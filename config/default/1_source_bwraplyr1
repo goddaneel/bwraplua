@@ -1,9 +1,7 @@
 #!/bin/bash
 
-
-### init
 ## variable
-declare -g _gs_0_exec="${0##*"/"}"
+declare -g _gs_0_exec="${0##*/}"
 declare -g _gs_lyrmode=",,e"
 
 ## check
@@ -14,10 +12,10 @@ if [[ "${_gs_0_exec}" == "${_gs_execname}" ]] ; then
 fi
 
 ## argument
-declare -ga "_ga_arg1_bwraplua"
+declare -a "_ga_arg1_bwraplua"
 _ga_arg1_bwraplua=(
         ,co '/bin/bash'
-        ,c "${_ES_bwraplua_conf}/default/2_bwraplyr2_and"
+        ,c "/_and/config/bwraplua/default/2_bwraplyr2_and"
         ,c "${_gs_0_exec}"
 )
 
@@ -27,17 +25,8 @@ if [[ ! -r "${_gs_confpath}${_gs_0_exec}_lyr2" ]] ; then
         declare -g _gs_lyrmode=",,e" ;
 fi
 
-
-### addmode
-## source
-source "${_ES_bwraplua_conf}/default/1_source_addmode"
-
-
-### bwraplua
 ## argument
-declare -ga "_ga_args_bwraplyr1"
-#       #
-declare -ga "_ga_args_bwraplua"
+declare -a "_ga_args_bwraplua"
 _ga_args_bwraplua=(
         ,q, ,c, ,y,
         ,ex "${_gs_0_exec}"
@@ -52,5 +41,5 @@ _ga_args_bwraplua=(
 )
 
 ## execute
-"${_ES_bwraplua_usrbin}" ${_ga_args_bwraplua[@]}
+exec "/_and/program/bwraplua/_usr/bin/bwraplua.lua" ${_ga_args_bwraplua[@]}
 
