@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+## postload
+# and
+for _gs_loop in /_and/config/bash/bashrc_d/*.bashrc ; do
+        source "${_gs_loop}" ;
+done
+
+# own
+for _gs_loop in /_end/${USER}/_0_config/bash/bashrc_d/*.bashrc ; do
+        source "${_gs_loop}" ;
+done
+
