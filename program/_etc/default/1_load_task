@@ -52,7 +52,10 @@ function _eF_load_taskUseKill ()
         shift "1" ;
         ## select
         '/usr/bin/kill' -0 "${_li_loadTask_use:?}" ;
-        _eF_load_initStopno "return" "1" ;
+        #       #
+        if [[ "${?}" != "0" ]] ; then
+                return "${?}" ;
+        fi
         ## common
         declare -a "_la_args_kill" ;
         _la_args_kill=(

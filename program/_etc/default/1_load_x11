@@ -3,7 +3,7 @@
 
 ### load
 ## function
-function _eF_load_x11Use () 
+function _eF_load_x11Call () 
 {
         ## export
         declare -gx "_es_loadX11_server" ;
@@ -25,22 +25,25 @@ function _eF_load_x11Use ()
                         declare -i _li_stat="1" ;
                         ;;
         esac
-        _eF_load_initStopno "return" ;
         #       #
         case "${_es_loadX11_server}" in
                 "xephyr")
                         _eF_load_x11ServerXephyr ;
-                        _eF_load_x11WindowIcewm ;
                         ;;
                 *)
                         declare -i _li_stat="1" ;
                         ;;
         esac
-        _eF_load_initStopno "return" ;
+        #       #
+        case "${_es_loadX11_window}" in
+                "icewm")
+                        _eF_load_x11WindowIcewm ;
+                        ;;
+        esac
         ## return
         return "${_li_stat}" ;
 }
-declare -fgxr "_eF_load_x11Use"
+declare -fgxr "_eF_load_x11Call"
 #       #
 function _eF_load_x11SocketSplit () 
 {
@@ -114,6 +117,7 @@ function _eF_load_x11ServerXephyr ()
         ## require
         _eF_load_initRequireFunc "_eF_load_taskSet" ;
         _eF_load_initRequireVars "_es_loadX11_display" ;
+        _eF_load_initRequireVars "_es_loadX11_fullpath" ;
         _eF_load_initRequireVars "_es_loadExec_name" ;
         _eF_load_initRequirePath "/usr/bin/Xephyr" ;
         _eF_load_initRequirePath "/usr/bin/sleep" ;
@@ -133,8 +137,8 @@ function _eF_load_x11ServerXephyr ()
         '/usr/bin/Xephyr' ${_la_args_xephyr[@]} &
         #       #
         _eF_load_initInfops "set" "xephyr" ;
-        _eF_load_initStopno "exit" "${_gi_stat_xephyr}" "ERROR" "Xephyr error." ;
-        _eF_load_taskSet "x11Server" "${_gi_stat_xephyr}" ;
+        _eF_load_initExitno "${_gi_stat_xephyr}" "ERROR" "Xephyr error." ;
+        _eF_load_taskSet "loadX11_server" "${_gi_stat_xephyr}" ;
         _eF_load_initInfops "cut" "xephyr" ;
         #       #
         while [[ ! -r "${_es_loadX11_fullpath}" ]] ; do
@@ -147,18 +151,21 @@ function _eF_load_x11WindowIcewm ()
 {
         ## require
         _eF_load_initRequireVars "_es_loadX11_display" ;
+        _eF_load_initRequireVars "_es_loadX11_fullpath" ;
         ## common
         declare -a "_la_args_bwraplua"
         _la_args_bwraplua=(
                 ,q, ,c, ,y,
                 ,re "03_lvl8_icewm"
+                ,o --setenv "${_es_loadX11_fullpath}" "${_es_loadX11_fullpath}"
+                ,o --setenv "DISPLAY" "${_es_loadX11_display}"
                 ,co '/usr/bin/icewm'
                 ,c "--theme=Infadel2"
                 ,c ${@}
         )
         #       #
         "${_eS_bwraplua_package}" ${_la_args_bwraplua[@]}
-        _eF_load_initStopno "exit" "${?}" "ERROR" "Icewm Failure." ;
+        _eF_load_initExitno "${?}" "ERROR" "Icewm Failure." ;
 }
 declare -fgxr "_eF_load_x11WindowIcewm"
 

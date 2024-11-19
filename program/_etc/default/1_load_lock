@@ -3,55 +3,42 @@
 
 ### load
 ## function
-function _eF_load_lockSet () 
+function _eF_load_lockCheck () 
 {
         ## argument
-        declare -x _zs_loadLock_type="${1%%:*}" ;
-        declare -x _zs_loadLock_name="${1##*:}" ;
-        declare _ls_loadLock_status="${2%%:*}" ;
-        declare _ls_loadLock_create="${2##*:}" ;
+        declare _ls_loadLock_type="${1%%:*}" ;
+        declare _ls_loadLock_name="${1##*:}" ;
+        declare _ls_loadLock_check="${2:-"wait"}" ;
         #       #
-        if [[ -z "${_zs_loadLock_type}" || -z "${_zs_loadLock_name}" ]] ; then
+        if [[ -z "${_ls_loadLock_type}" || -z "${_ls_loadLock_name}" ]] ; then
                 _eF_load_initFinish "exit" "1" "ERROR" "Invalid lock type or name." ;
         fi
         ## zone
         declare -x _zs_loadLock_home="${_eS_bwraplua_runtime}/lock" ;
-        declare -x _zs_loadLock_sort="${_zs_loadLock_home}/${_zs_loadLock_type}" ;
-        declare -x _zs_loadLock_path="${_zs_loadLock_sort}/${_zs_loadLock_name}" ;
-        declare -x _zs_loadLock_keys="${_zs_loadLock_type}__${_zs_loadLock_name}" ;
+        declare -x _zs_loadLock_sort="${_zs_loadLock_home}/${_ls_loadLock_type}" ;
+        declare -x _zs_loadLock_path="${_zs_loadLock_sort}/${_ls_loadLock_name}" ;
+        declare -x _zs_loadLock_keys="${_ls_loadLock_type}_${_ls_loadLock_name}" ;
         ## variable
         declare -i _li_stat="0" ;
         ## select
-        case "${_ls_loadLock_status}" in
+        case "${_ls_loadLock_check}" in
                 "wait")
-                        _eF_load_lockStatusWait "${3}" ;
+                        _eF_load_lockCheckWait "${3}" "${4}" ;
                         ;;
                 *)
                         declare -i _li_stat="1" ;
                         ;;
         esac
-        _eF_load_initStopno "return" ;
-        #       #
-        case "${_ls_loadLock_create}" in
-                "tail")
-                        _eF_load_lockCreateTail "${4}" ;
-                        ;;
-                "sleep")
-                        _eF_load_lockCreateSleep "${4}" ;
-                        ;;
-                *)
-                        declare -i _li_stat="1" ;
-                        ;;
-        esac
-        _eF_load_initStopno "return" ;
         ## return
         return "${_li_stat}" ;
 }
-declare -fgxr "_eF_load_lockSet"
+declare -fxr "_eF_load_lockCheck"
 #       #
-function _eF_load_lockStatusWait () 
+function _eF_load_lockCheckWait () 
 {
         ## require
+        _eF_load_initRequireVars "_zs_loadLock_path" ;
+        _eF_load_initRequireVars "_zs_loadLock_keys" ;
         _eF_load_initRequirePath "/usr/bin/flock" ;
         _eF_load_initRequirePath "/usr/bin/sleep" ;
         ## variable
@@ -64,24 +51,59 @@ function _eF_load_lockStatusWait ()
         )
         ## common
         if [[ ! -e "${_zs_loadLock_path}" ]] ; then
-                return "1" ;
+                return "0" ;
         fi
         #       #
         '/usr/bin/flock' ${_la_args_flock[@]} ;
 }
-declare -fgxr "_eF_load_lockStatusWait"
+declare -fgxr "_eF_load_lockCheckWait"
 #       #
-function _eF_load_lockCreateTail () 
+function _eF_load_lockStart () 
+{
+        ## argument
+        declare _ls_loadLock_type="${1%%:*}" ;
+        declare _ls_loadLock_name="${1##*:}" ;
+        declare _ls_loadLock_start="${2:-"sleep"}" ;
+        #       #
+        if [[ -z "${_ls_loadLock_type}" || -z "${_ls_loadLock_name}" ]] ; then
+                _eF_load_initFinish "exit" "1" "ERROR" "Invalid lock type or name." ;
+        fi
+        ## zone
+        declare -x _zs_loadLock_home="${_eS_bwraplua_runtime}/lock" ;
+        declare -x _zs_loadLock_sort="${_zs_loadLock_home}/${_ls_loadLock_type}" ;
+        declare -x _zs_loadLock_path="${_zs_loadLock_sort}/${_ls_loadLock_name}" ;
+        declare -x _zs_loadLock_keys="${_ls_loadLock_type}__${_ls_loadLock_name}" ;
+        ## variable
+        declare -i _li_stat="0" ;
+        ## select
+        case "${_ls_loadLock_start}" in
+                "tail")
+                        _eF_load_lockStartTail ;
+                        ;;
+                "sleep")
+                        _eF_load_lockStartSleep "${3}"_ ;
+                        ;;
+                *)
+                        declare -i _li_stat="1" ;
+                        ;;
+        esac
+        ## return
+        return "${_li_stat}" ;
+}
+declare -fxr "_eF_load_lockStart"
+#       #
+function _eF_load_lockStartTail () 
 {
         ## require
         _eF_load_initRequireFunc "_eF_load_taskSet" ;
-        _eF_load_initRequireFunc "_eF_load_overSet" ;
+        _eF_load_initRequireVars "_zs_loadLock_path" ;
+        _eF_load_initRequireVars "_zs_loadLock_keys" ;
         _eF_load_initRequirePath "/usr/bin/mkdir" ;
         _eF_load_initRequirePath "/usr/bin/flock" ;
         _eF_load_initRequirePath "/usr/bin/tail" ;
         ## common
         '/usr/bin/mkdir' -pv "${_zs_loadLock_sort}" ;
-        _eF_load_initStopno "return" ;
+        _eF_load_initExitno "return" ;
         #       #
         declare -a "_la_args_flock"
         _la_args_flock=(
@@ -93,14 +115,13 @@ function _eF_load_lockCreateTail ()
         '/usr/bin/flock' ${_la_args_flock[@]} &
         #       #
         _eF_load_initInfops "set" "flock" ;
-        _eF_load_initStopno "exit" "${_gi_stat_flock}" "ERROR" "Lock failure." ;
-        _eF_load_taskSet "${_zs_loadLock_keys}" "${_gi_proc_flock}" ;
-        _eF_load_overSet "true" "_eF_load_taskUseKill '${_zs_loadLock_keys}'" ;
+        _eF_load_initExitno "${_gi_stat_flock}" "ERROR" "Lock start failure." ;
+        _eF_load_taskSet "loadLock_${_zs_loadLock_keys}" "${_gi_proc_flock}" ;
         _eF_load_initInfops "cut" "flock" ;
 }
-declare -fgxr "_eF_load_lockCreateTail"
+declare -fgxr "_eF_load_lockStartTail"
 #       #
-function _eF_load_lockCreateSleep () 
+function _eF_load_lockStartSleep () 
 {
         ## require
         _eF_load_initRequireFunc "_eF_load_taskSet" ;
@@ -110,21 +131,20 @@ function _eF_load_lockCreateSleep ()
         _eF_load_initRequirePath "/usr/bin/sleep" ;
         ## common
         '/usr/bin/mkdir' -pv "${_zs_loadLock_sort}" ;
-        _eF_load_initStopno "return" ;
+        _eF_load_initExitno "return" ;
         #       #
         declare -a "_la_args_flock"
         _la_args_flock=(
                 -Fx
                 "${_zs_loadLock_path}"
-                '/usr/bin/sleep' "${2:-"10s"}"
+                '/usr/bin/sleep' "${1:-"10s"}"
         )
         '/usr/bin/flock' ${_la_args_flock[@]} &
         #       #
         _eF_load_initInfops "set" "flock" ;
-        _eF_load_initStopno "exit" "${_gi_stat_flock}" "ERROR" "Lock failure." ;
-        _eF_load_taskSet "${_zs_loadLock_keys}" "${_gi_proc_flock}" ;
-        _eF_load_overSet "true" "_eF_load_taskUseKill '${_zs_loadLock_keys}'" ;
+        _eF_load_initExitno "${_gi_stat_flock}" "ERROR" "Lock start failure." ;
+        _eF_load_taskSet "loadLock_${_zs_loadLock_keys}" "${_gi_proc_flock}" ;
         _eF_load_initInfops "cut" "flock" ;
 }
-declare -fgxr "_eF_load_lockCreateSleep"
+declare -fgxr "_eF_load_lockStartSleep"
 

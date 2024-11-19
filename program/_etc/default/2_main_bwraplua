@@ -22,19 +22,17 @@ function _eF_main_bwraplua ()
         _eF_load_taskNew ;
         ## exec
         declare -gx _es_loadExec_type="${_es_loadExec_type:-"bwraplua"}" ;
-        declare -gx _es_loadExec_attr="${_es_loadExec_attr:-"03_lvl8"}" ;
-        _eF_load_execNew ;
+        _eF_load_execCall ;
         #       #
-        _eF_load_execBaseUse ;
+        _eF_load_execPresetUse ;
         if [[ "${?}" != "0" ]] ; then
                 declare -gx _es_loadExec_name="${1:?}" ;
-                _eF_load_initStopno "exit" "${?}" "ERROR" "Unavailable Name." ;
+                _eF_load_initExitno "${?}" "ERROR" "Unavailable Name." ;
                 shift "1" ;
         fi
         ## room
-        _eF_load_roomNew ;
+        _eF_load_roomCall ;
         ## lock
-        _eF_load_lockSet "${_es_loadExec_type}:${_es_loadExec_name}" "wait:tail" "0" ;
         ## dbus
         declare -a "_la_arg1_bwraplua" ;
         _la_arg1_bwraplua=(
@@ -42,9 +40,8 @@ function _eF_main_bwraplua ()
                 ,o --setenv "DBUS_SESSION_BUS_ADDRESS" "unix:path=${_es_loadDbus_path}"
         )
         #       #
-        _eF_load_dbusUse ;
+        _eF_load_dbusCall ;
         if [[ "${?}" == "0" ]] ; then
-                _eF_load_overSet "true" "_eF_load_taskUseKill 'dbusProxy'" ;
         else
                 unset -v "_la_arg1_bwraplua" ;
         fi
@@ -55,9 +52,8 @@ function _eF_main_bwraplua ()
                 ,o --setenv "DISPLAY" "${_es_loadX11_display}"
         )
         #       #
-        _eF_load_x11Use ;
+        _eF_load_x11Call ;
         if [[ "${?}" == "0" ]] ; then
-                _eF_load_overSet "true" "_eF_load_taskUseKill 'x11Server'" ;
         else
                 unset -v "_la_arg2_bwraplua" ;
         fi

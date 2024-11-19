@@ -22,9 +22,9 @@ function _eF_load_overUse ()
         declare -i _li_loadOver_fi="${#_ea_loadOver_fi[@]}" ;
         ## select
         for (( _li_loop=0 ; _li_loop<${_li_loadOver_fi} ; _li_loop++ )) ; do
-                '/bin/bash' -c "${_ea_loadOver_if[${_li_loop}]}" ;
+                '/bin/bash' -c ${_ea_loadOver_if[${_li_loop}]} ;
                 if [[ "${?}" == "0" ]] ; then
-                        '/bin/bash' -c "${_ea_loadOver_fi[${_li_loop}]}" ;
+                        '/bin/bash' -c ${_ea_loadOver_fi[${_li_loop}]} ;
                 fi
         done
 }
@@ -90,4 +90,25 @@ function _eF_load_overSetPgrep ()
         _eF_load_overSet "${_ls_loadOver_if}" "${_ls_loadOver_fi}" ;
 }
 declare -fgxr "_eF_load_overSetPgrep"
+#       #
+function _eF_load_overSetTask () 
+{
+        ## require
+        ## variable
+        declare -i _li_loadOver_set="${_ed_loadTask_list["${1:?}"]}" ;
+        #       #
+        shift "1" ;
+        #       #
+        declare -a "_la_args_kill" ;
+        _la_args_kill=(
+                ${@}
+                ${_li_loadOver_set}
+        )
+        #       #
+        declare _ls_loadOver_if="'/usr/bin/kill' -0 '${_li_loadOver_set}'" ;
+        declare _ls_loadOver_fi="'/usr/bin/kill' ${_la_args_kill[@]}" ;
+        ## common
+        _eF_load_overSet "${_ls_loadOver_if}" "${_ls_loadOver_fi}" ;
+}
+declare -fxr "_eF_load_overSetTask"
 

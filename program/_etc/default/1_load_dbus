@@ -3,7 +3,7 @@
 
 ### load
 ## function
-function _eF_load_dbusUse () 
+function _eF_load_dbusCall () 
 {
         ## export
         declare -gx "_es_loadDbus_type" ;
@@ -19,11 +19,14 @@ function _eF_load_dbusUse ()
                         declare -i _li_stat="1" ;
                         ;;
         esac
-        _eF_load_initStopno "return" ;
+        #       #
+        if [[ "${?}" != "0" ]] ; then
+                return ${?} ;
+        fi
         ## return
         return "${_li_stat}" ;
 }
-declare -fgxr "_eF_load_dbusUse"
+declare -fgxr "_eF_load_dbusCall"
 #       #
 function _eF_load_dbusProxy () 
 {
@@ -54,7 +57,7 @@ function _eF_load_dbusProxy ()
         esac
         ## common
         '/usr/bin/mkdir' -pv "${_es_loadRoom_dirs}/xdgdbusproxy" ;
-        _eF_load_initStopno "return" ;
+        _eF_load_initExitno "${?}" "ERROR" "Dbusproxy mkdir failure."_ ;
         #       #
         declare -a "_la_args_xdgdbusproxy"
         _la_args_xdgdbusproxy=(
@@ -69,8 +72,8 @@ function _eF_load_dbusProxy ()
         '/usr/bin/xdg-dbus-proxy' ${_la_args_xdgdbusproxy[@]} &
         #       #
         _eF_load_initInfops "set" "xdgdbusproxy" ;
-        _eF_load_initStopno "exit" "${_gi_stst_xdgdbusproxy}" "ERROR" "Dbus error." ;
-        _eF_load_taskSet "dbusProxy" "${_gi_proc_xdgdbusproxy}" ;
+        _eF_load_initExitno "${_gi_stst_xdgdbusproxy}" "ERROR" "Dbus error." ;
+        _eF_load_taskSet "loadDbus_proxy" "${_gi_proc_xdgdbusproxy}" ;
         _eF_load_initInfops "cut" "xdgdbusproxy" ;
         #       #
         while [[ ! -r "${_es_loadDbus_path}" ]] ; do

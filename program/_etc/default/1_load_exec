@@ -15,28 +15,28 @@ function _eF_load_execNew ()
 }
 declare -fgxr "_eF_load_execNew"
 #       #
-function _eF_load_execBaseNew () 
+function _eF_load_execPresetNew () 
 {
         ## unset
-        unset -v "_ea_loadExec_base" ;
+        unset -v "_ea_loadExec_preset" ;
         ## variable
-        declare -gxa "_ea_loadExec_base" ;
-        _ea_loadExec_base=(${@})
+        declare -gxa "_ea_loadExec_preset" ;
+        _ea_loadExec_preset=(${@})
 }
-declare -fgxr "_eF_load_execBaseNew"
+declare -fgxr "_eF_load_execPresetNew"
 #       #
-function _eF_load_execBaseUse () 
+function _eF_load_execPresetUse () 
 {
         ## variable
-        declare -i _li_loadExec_base="${#_ea_loadExec_base[@]}" ;
+        declare -i _li_loadExec_preset="${#_ea_loadExec_preset[@]}" ;
         ## select
-        for (( _li_loop=0 ; _li_loop<${_li_loadExec_base} ; _li_loop++ )) ; do
-                declare _ls_loop="${_ea_loadExec_base[${_li_loop}]}" ;
+        for (( _li_loop=0 ; _li_loop<${_li_loadExec_preset} ; _li_loop++ )) ; do
+                declare _ls_loop="${_ea_loadExec_preset[${_li_loop}]}" ;
                 #       #
                 if [[ "${_es_loadExec_name}" == "${_ls_loop}" ]] ; then
                         return "1" ;
                 fi
         done
 }
-declare -fgxr "_eF_load_execBaseUse"
+declare -fgxr "_eF_load_execPresetUse"
 
