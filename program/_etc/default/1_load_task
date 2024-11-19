@@ -1,0 +1,66 @@
+#!/bin/bash
+
+
+### load
+## function
+function _eF_load_taskNew () 
+{
+        ## unset
+        unset -v "_ed_loadTask_list" ;
+        ## export
+        declare -gxAi "_ed_loadTask_list" ;
+}
+declare -fgxr "_eF_load_taskNew"
+#       #
+function _eF_load_taskSet () 
+{
+        ## export
+        declare -gxAi "_ed_loadTask_list" ;
+        _ed_loadTask_list["${1:?}"]="${2:?}" ;
+}
+declare -fgxr "_eF_load_taskSet"
+#       #
+function _eF_load_taskCut () 
+{
+        ## export
+        declare -gxAi "_ed_loadTask_list" ;
+        ## unset
+        unset -v "_ed_loadTask_list["${1:?}"]" ;
+}
+declare -fgxr "_eF_load_taskCut"
+#       #
+function _eF_load_taskGet () 
+{
+        ## variable
+        declare -i _li_loadTask_get="${_ed_loadTask_list["${1:?}"]}" ;
+        ## select
+        if [[ -n "${_li_loadTask_get}" ]] ; then
+                echo -n "${_li_loadTask_get}" ;
+        else
+                return "1" ;
+        fi
+}
+declare -fgxr "_eF_load_taskGet"
+#       #
+function _eF_load_taskUseKill () 
+{
+        ## require
+        _eF_load_initRequirePath "/usr/bin/kill" ;
+        ## variable
+        declare -i _li_loadTask_use="${_ed_loadTask_list["${1:?}"]}" ;
+        #       #
+        shift "1" ;
+        ## select
+        '/usr/bin/kill' -0 "${_li_loadTask_use:?}" ;
+        _eF_load_initStopno "return" "1" ;
+        ## common
+        declare -a "_la_args_kill" ;
+        _la_args_kill=(
+                ${@}
+                ${_li_loadTask_use}
+        )
+        #       #
+        '/usr/bin/kill' ${_la_args_kill[@]} ;
+}
+declare -fgxr "_eF_load_taskUseKill"
+

@@ -1,0 +1,167 @@
+#!/bin/bash
+
+
+### init
+## function
+function _eF_load_initNotify () 
+{
+        ## argument
+        declare _ls_loadInit_notifyCli="${1%%:*}" ;
+        declare _ls_loadInit_notifyGui="${1##*:}" ;
+        #       #
+        if [[ -z "${1}" || -z "${2}" ]] ; then
+                return "1" ;
+        fi
+        ## select
+        case "${_ls_loadInit_notifyCli}" in
+                "ERROR")
+                        echo -e "\033[31m ${1}: ${2} \033[0m" ;
+                        ;;
+                "WARNING")
+                        echo -e "\033[33m ${1}: ${2} \033[0m" ;
+                        ;;
+                "")
+                        ;;
+                *)
+                        echo -e "\033[37m ${1}: ${2} \033[0m" ;
+                        ;;
+        esac
+        #       #
+        case "${_ls_loadInit_notifyGui}" in
+                "CRITICAL")
+                        declare -a "_la_args_notifysend" ;
+                        _la_args_notifysend=(
+                                --urgency="critical"
+                                --app-name="bwraplua"
+                                "${1}"
+                                "${2}"
+                        )
+                        #       #
+                        '/usr/bin/notify-send' ${_la_args_notifysend[@]} ;
+                        ;;
+                "")
+                        ;;
+                *)
+                        declare -a "_la_args_notifysend" ;
+                        _la_args_notifysend=(
+                                --urgency="normal"
+                                --app-name="bwraplua"
+                                "${1}"
+                                "${2}"
+                        )
+                        #       #
+                        '/usr/bin/notify-send' ${_la_args_notifysend[@]} ;
+                        ;;
+        esac
+}
+declare -fgxr "_eF_load_initNotify"
+#       #
+function _eF_load_initFinish () 
+{
+        declare -i _li_stat_finish="${2:?}" ;
+        #       #
+        _eF_load_initNotify "${3}" "${4}" ;
+        #       #
+        case "${1}" in
+                "exit")
+                        exit "${_li_stat_finish}" ;
+                        ;;
+                "return")
+                        return "${_li_stat_finish}" ;
+                        ;;
+                "break")
+                        break "${_li_stat_finish}" ;
+                        ;;
+                "quiet")
+                        ;;
+                *)
+                        _eF_load_initNotify "ERROR" "${1} ~ Unknown finish mode."
+                        ;;
+        esac
+}
+declare -fgxr "_eF_load_initFinish"
+#       #
+function _eF_load_initStopno () 
+{
+        if [[ -n "${2}" ]] ; then
+                declare -i _li_stat_stopno="${2}" ;
+        else
+                declare -i _li_stat_stopno="${?}" ;
+        fi
+        #       #
+        if [[ "${_li_stat_stopno}" != "0" ]] ; then
+                _eF_load_initFinish "${1:?}" "${_li_stat_stopno}" "${3}" "${4}" ;
+        fi
+}
+declare -fgxr "_eF_load_initStopno"
+#       #
+function _eF_load_initInfops () 
+{
+        declare _ls_loadInit_infops="${!}:${?}" ;
+        #       #
+        if [[ -z "${1}" || -z "${2}" ]] ; then
+                return "1" ;
+        fi
+        #       #
+        case "${1}" in
+                "set")
+                        declare -gi _gi_stat_${2}="${_ls_loadInit_infops##*:}" ;
+                        declare -gi _gi_proc_${2}="${_ls_loadInit_infops%%:*}" ;
+                        ;;
+                "cut")
+                        unset -v "_gi_stat_${2}" ;
+                        unset -v "_gi_proc_${2}" ;
+                        ;;
+                *)
+                        return "1" ;
+                        ;;
+        esac
+}
+declare -fgxr "_eF_load_initInfops"
+#       #
+function _eF_load_initSource () 
+{
+        source "${_eS_bwraplua_init}/${1:?}" ;
+        #       #
+        _eF_load_initStopno "exit" "${?}" "ERROR" "${1} ~ Source failure" ;
+}
+declare -fgxr "_eF_load_initSource"
+#       #
+function _eF_load_initRequireVars () 
+{
+        ## variable
+        declare -n _ln_loadInit_require="${1:?}" ;
+        ## check
+        test -n "${_ln_loadInit_require}" ;
+        #       #
+        _eF_load_initStopno "exit" "${?}" "ERROR" "${1} ~ Variable is not available." ;
+}
+declare -fgxr "_eF_load_initRequireVars"
+#       #
+function _eF_load_initRequireFunc () 
+{
+        ## check
+        declare -F "${1:?}" ;
+        #       #
+        _eF_load_initStopno "exit" "${?}" "ERROR" "${1} ~ Function is not available." ;
+}
+declare -fgxr "_eF_load_initRequireFunc"
+#       #
+function _eF_load_initRequireExec () 
+{
+        ## check
+        command -p "${1:?}" ;
+        #       #
+        _eF_load_initStopno "exit" "${?}" "ERROR" "${1} ~ Command is not available." ;
+}
+declare -fgxr "_eF_load_initRequireExec"
+#       #
+function _eF_load_initRequirePath () 
+{
+        ## check
+        test -x "${1:?}" ;
+        #       #
+        _eF_load_initStopno "exit" "${?}" "ERROR" "${1} ~ Filepath is not available." ;
+}
+declare -fgxr "_eF_load_initRequirePath"
+

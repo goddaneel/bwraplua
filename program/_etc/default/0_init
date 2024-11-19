@@ -1,0 +1,12 @@
+#!/bin/bash
+
+
+### init
+## environment
+declare -gxr _eS_bwraplua_init="/_and/config/bwraplua/default"
+
+## source
+source "${_eS_bwraplua_init}/0_init_set" || exit
+source "${_eS_bwraplua_init}/0_init_env" || exit
+source "${_eS_bwraplua_init}/0_init_fun" || exit
+

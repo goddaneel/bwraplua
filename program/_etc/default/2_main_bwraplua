@@ -1,0 +1,83 @@
+#!/bin/bash
+
+
+### main
+## function
+function _eF_main_bwraplua () 
+{
+        ### init
+        ## source
+        _eF_load_initSource "1_load_over" ;
+        _eF_load_initSource "1_load_task" ;
+        _eF_load_initSource "1_load_exec" ;
+        _eF_load_initSource "1_load_room" ;
+        _eF_load_initSource "1_load_lock" ;
+        _eF_load_initSource "1_load_dbus" ;
+        _eF_load_initSource "1_load_x11" ;
+        ## require
+        ### load
+        ## over
+        _eF_load_overNew ;
+        ## task
+        _eF_load_taskNew ;
+        ## exec
+        declare -gx _es_loadExec_type="${_es_loadExec_type:-"bwraplua"}" ;
+        declare -gx _es_loadExec_attr="${_es_loadExec_attr:-"03_lvl8"}" ;
+        _eF_load_execNew ;
+        #       #
+        _eF_load_execBaseUse ;
+        if [[ "${?}" != "0" ]] ; then
+                declare -gx _es_loadExec_name="${1:?}" ;
+                _eF_load_initStopno "exit" "${?}" "ERROR" "Unavailable Name." ;
+                shift "1" ;
+        fi
+        ## room
+        _eF_load_roomNew ;
+        ## lock
+        _eF_load_lockSet "${_es_loadExec_type}:${_es_loadExec_name}" "wait:tail" "0" ;
+        ## dbus
+        declare -a "_la_arg1_bwraplua" ;
+        _la_arg1_bwraplua=(
+                ,o --ro-bind "${_es_loadDbus_path}" "${_es_loadDbus_path}"
+                ,o --setenv "DBUS_SESSION_BUS_ADDRESS" "unix:path=${_es_loadDbus_path}"
+        )
+        #       #
+        _eF_load_dbusUse ;
+        if [[ "${?}" == "0" ]] ; then
+                _eF_load_overSet "true" "_eF_load_taskUseKill 'dbusProxy'" ;
+        else
+                unset -v "_la_arg1_bwraplua" ;
+        fi
+        ## x11
+        declare -a "_la_arg2_bwraplua" ;
+        _la_arg2_bwraplua=(
+                ,o --setenv "${_es_loadX11_fullpath}" "${_es_loadX11_fullpath}"
+                ,o --setenv "DISPLAY" "${_es_loadX11_display}"
+        )
+        #       #
+        _eF_load_x11Use ;
+        if [[ "${?}" == "0" ]] ; then
+                _eF_load_overSet "true" "_eF_load_taskUseKill 'x11Server'" ;
+        else
+                unset -v "_la_arg2_bwraplua" ;
+        fi
+        ### main
+        ## argument
+        declare -a "_la_args_bwraplua" ;
+        _la_args_bwraplua=(
+                ,q, ,c, ,y,
+                ,ex "${_es_loadExec_name}"
+                ,re "${_es_loadExec_attr}_${_es_loadExec_name}"
+                ,o --setenv "PATH" "${_es_loadExec_path}"
+                ,co "command" "-p" "${_es_loadExec_name}"
+                ,,n ${_la_arg1_bwraplua[@]}
+                ,,n ${_la_arg2_bwraplua[@]}
+                ,c ${@}
+        )
+        ## execute
+        "${_eS_bwraplua_package}" ${_la_args_bwraplua[@]} ;
+        ## loadover
+        _eF_load_overUse ;
+}
+declare -fgxr "_eF_main_bwraplua"
+

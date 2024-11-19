@@ -1,0 +1,81 @@
+#!/bin/bash
+
+
+### load
+## function
+function _eF_load_dbusUse () 
+{
+        ## export
+        declare -gx "_es_loadDbus_type" ;
+        declare -gx "_es_loadDbus_path" ;
+        ## variable
+        declare -i _li_stat="0" ;
+        ## select
+        case "${_es_loadDbus_type}" in
+                "proxy")
+                        _eF_load_dbusProxy ;
+                        ;;
+                *)
+                        declare -i _li_stat="1" ;
+                        ;;
+        esac
+        _eF_load_initStopno "return" ;
+        ## return
+        return "${_li_stat}" ;
+}
+declare -fgxr "_eF_load_dbusUse"
+#       #
+function _eF_load_dbusProxy () 
+{
+        ## require
+        _eF_load_initRequireFunc "_eF_load_taskSet" ;
+        _eF_load_initRequireVars "_es_loadRoom_dirs" ;
+        _eF_load_initRequirePath "/usr/bin/mkdir" ;
+        _eF_load_initRequirePath "/usr/bin/xdg-dbus-proxy" ;
+        _eF_load_initRequirePath "/usr/bin/sleep" ;
+        ## export
+        declare -gx "_es_loadDbus_proxyMode" ;
+        declare -gxa "_ea_loadDbus_proxyCustom" ;
+        declare -gx _es_loadDbus_path="${_es_loadRoom_dirs}/xdgdbusproxy/bus" ;
+        ## select
+        case "${_es_loadDbus_proxyMode}" in
+                "notify")
+                        declare -a "_la_arg1_xdgdbusproxy" ;
+                        _la_arg1_xdgdbusproxy=(
+                                --talk="org.kde.StatusNotifierWatcher"
+                        )
+                        ;;
+                "custom")
+                        declare -a "_la_arg1_xdgdbusproxy" ;
+                        _la_arg1_xdgdbusproxy=(
+                                ${_ea_loadDbus_proxyCustom[@]}
+                        )
+                        ;;
+        esac
+        ## common
+        '/usr/bin/mkdir' -pv "${_es_loadRoom_dirs}/xdgdbusproxy" ;
+        _eF_load_initStopno "return" ;
+        #       #
+        declare -a "_la_args_xdgdbusproxy"
+        _la_args_xdgdbusproxy=(
+                "${DBUS_SESSION_BUS_ADDRESS}"
+                "${_es_loadDbus_path}"
+                --filter
+                --log
+                ${_la_arg1_xdgdbusproxy[@]}
+                ${@}
+        )
+        #       #
+        '/usr/bin/xdg-dbus-proxy' ${_la_args_xdgdbusproxy[@]} &
+        #       #
+        _eF_load_initInfops "set" "xdgdbusproxy" ;
+        _eF_load_initStopno "exit" "${_gi_stst_xdgdbusproxy}" "ERROR" "Dbus error." ;
+        _eF_load_taskSet "dbusProxy" "${_gi_proc_xdgdbusproxy}" ;
+        _eF_load_initInfops "cut" "xdgdbusproxy" ;
+        #       #
+        while [[ ! -r "${_es_loadDbus_path}" ]] ; do
+                '/usr/bin/sleep' "0.1s" ;
+        done
+}
+declare -fgxr "_eF_load_dbusProxy"
+

@@ -1,0 +1,108 @@
+#!/bin/bash
+
+
+### load
+## function
+function _eF_load_roomNew () 
+{
+        ## require
+        _eF_load_initRequireVars "_es_loadExec_name" ;
+        _eF_load_initRequireVars "_es_loadExec_type" ;
+        ## export
+        declare -gx _es_loadRoom_home="${_eS_bwraplua_runtime}/room" ;
+        declare -gx _es_loadRoom_sort="${_es_loadRoom_home}/${_es_loadExec_type}" ;
+        declare -gx _es_loadRoom_create="${_es_loadRoom_create:-"temp"}" ;
+        declare -gx _es_loadRoom_delete="${_es_loadRoom_delete:-"trash"}" ;
+        ## variable
+        declare -i _li_stat="0" ;
+        ## select
+        case "${_es_loadRoom_delete}" in
+                "remove")
+                        _eF_load_roomDeleteRemove ;
+                        ;;
+                "trash")
+                        _eF_load_roomDeleteTrash ;
+                        ;;
+                *)
+                        declare -i _li_stat="1" ;
+                        ;;
+        esac
+        #       #
+        case "${_es_loadRoom_create}" in
+                "name")
+                        _eF_load_roomCreateName ;
+                        ;;
+                "temp")
+                        _eF_load_roomCreateTemp ;
+                        ;;
+                *)
+                        declare -i _li_stat="1" ;
+                        ;;
+        esac
+        ## return
+        return "${_li_stat}" ;
+}
+declare -fgxr "_eF_load_roomNew"
+#       #
+function _eF_load_roomCreateName () 
+{
+        ## require
+        _eF_load_initRequireVars "_es_loadRoom_sort" ;
+        _eF_load_initRequireVars "_es_loadExec_name" ;
+        _eF_load_initRequirePath "/usr/bin/mkdir" ;
+        ## export
+        declare -gx _es_loadRoom_dirs="${_es_loadRoom_sort}/${_es_loadRoom_name}" ;
+        ## common
+        '/usr/bin/mkdir' -pv "${_es_loadRoom_dirs}" ;
+        _eF_load_initStopno "exit" "${?}" "ERROR" "Room mkdir failure."
+}
+declare -fgxr "_eF_load_roomCreateName"
+#       #
+function _eF_load_roomCreateTemp () 
+{
+        ## require
+        _eF_load_initRequireVars "_es_loadRoom_sort" ;
+        _eF_load_initRequireVars "_es_loadExec_name" ;
+        _eF_load_initRequirePath "/usr/bin/mktemp" ;
+        ## export
+        declare -gx "_es_loadRoom_dirs" ;
+        ## common
+        declare -a "_la_args_mktemp" ;
+        _la_args_mktemp=(
+                -u
+                -d
+                -p "${_es_loadRoom_sort}"
+                -t "${_es_loadRoom_name}_XXXXXX"
+        )
+        #       #
+        _es_loadRoom_dirs="$('/usr/bin/mktemp' ${_la_args_mktemp[@]})" ;
+        '/usr/bin/mkdir' -pv "${_es_loadRoom_dirs}" ;
+        _eF_load_initStopno "exit" "${?}" "ERROR" "Room mktemp failure."
+}
+declare -fgxr "_eF_load_roomCreateTemp"
+#       #
+function _eF_load_roomDeleteRemove () 
+{
+        ## require
+        _eF_load_initRequireVars "_es_loadRoom_sort" ;
+        _eF_load_initRequireVars "_es_loadExec_name" ;
+        _eF_load_initRequirePath "/usr/bin/rm" ;
+        ## export
+        declare -gx _es_loadRoom_dirs="${_es_loadRoom_sort}/${_es_loadRoom_name}" ;
+        ## common
+        '/usr/bin/rm' -rv "${_es_loadRoom_dirs}" ;
+}
+#       #
+function _eF_load_roomDeleteTrash () 
+{
+        ## require
+        _eF_load_initRequireVars "_es_loadRoom_sort" ;
+        _eF_load_initRequireVars "_es_loadExec_name" ;
+        _eF_load_initRequirePath "/usr/bin/trash-put" ;
+        ## export
+        declare -gx _es_loadRoom_dirs="${_es_loadRoom_sort}/${_es_loadRoom_name}" ;
+        ## common
+        '/usr/bin/trash-put' -v "${_es_loadRoom_dirs}" ;
+}
+declare -fgxr "_eF_load_roomDeleteTrash"
+

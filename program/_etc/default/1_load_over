@@ -1,0 +1,93 @@
+#!/bin/bash
+
+
+### load
+## function
+function _eF_load_overNew () 
+{
+        ## unset
+        unset -v "_ea_loadOver_if" ;
+        unset -v "_ea_loadOver_fi" ;
+        ## export
+        declare -gxa "_ea_loadOver_if" ;
+        declare -gxa "_ea_loadOver_fi" ;
+}
+declare -fgxr "_eF_load_overNew"
+#       #
+function _eF_load_overUse () 
+{
+        ## require
+        _eF_load_initRequirePath "/bin/bash" ;
+        ## variable
+        declare -i _li_loadOver_fi="${#_ea_loadOver_fi[@]}" ;
+        ## select
+        for (( _li_loop=0 ; _li_loop<${_li_loadOver_fi} ; _li_loop++ )) ; do
+                '/bin/bash' -c "${_ea_loadOver_if[${_li_loop}]}" ;
+                if [[ "${?}" == "0" ]] ; then
+                        '/bin/bash' -c "${_ea_loadOver_fi[${_li_loop}]}" ;
+                fi
+        done
+}
+declare -fgxr "_eF_load_overUse"
+#       #
+function _eF_load_overSet () 
+{
+        ## export
+        declare -gxa "_ea_loadOver_if" ;
+        declare -gxa "_ea_loadOver_fi" ;
+        ## variable
+        _ea_loadOver_if[${#_ea_loadOver_fi[@]}]="${1:?}" ;
+        _ea_loadOver_fi[${#_ea_loadOver_fi[@]}]="${2:?}" ;
+}
+declare -fgxr "_eF_load_overSet"
+#       #
+function _eF_load_overSetKill () 
+{
+        ## require
+        _eF_load_initRequirePath "/usr/bin/kill" ;
+        ## variable
+        declare -i _li_loadOver_set="${1:?}" ;
+        #       #
+        shift "1" ;
+        #       #
+        declare -a "_la_args_kill" ;
+        _la_args_kill=(
+                ${@}
+                ${_li_loadOver_set}
+        )
+        #       #
+        declare _ls_loadOver_if="'/usr/bin/kill' -0 '${_li_loadOver_set}'" ;
+        declare _ls_loadOver_fi="'/usr/bin/kill' ${_la_args_kill[@]}" ;
+        ## common
+        _eF_load_overSet "${_ls_loadOver_if}" "${_ls_loadOver_fi}" ;
+}
+declare -fgxr "_eF_load_overSetKill"
+#       #
+function _eF_load_overSetPgrep () 
+{
+        ## require
+        _eF_load_initRequirePath "/usr/bin/pgrep" ;
+        _eF_load_initRequirePath "/usr/bin/kill" ;
+        ## variable
+        declare -i "_li_loadOver_set" ;
+        _li_loadOver_set="$('/usr/bin/pgrep' -n "${1:?}")" ;
+        #       #
+        if [[ "${?}" != "0" || "${_li_loadOver_set}" -lt "${$}" ]] ; then
+                _eF_load_initFinish "return" "1" "WARNING:" "${1} ~ no such process." ;
+        fi
+        #       #
+        shift "1" ;
+        #       #
+        declare -a "_la_args_kill" ;
+        _la_args_kill=(
+                ${@}
+                ${_li_loadOver_set}
+        )
+        #       #
+        declare _ls_loadOver_if="'/usr/bin/kill' -0 '${_li_loadOver_set}'" ;
+        declare _ls_loadOver_fi="'/usr/bin/kill' ${_la_args_kill[@]}" ;
+        ## common
+        _eF_load_overSet "${_ls_loadOver_if}" "${_ls_loadOver_fi}" ;
+}
+declare -fgxr "_eF_load_overSetPgrep"
+

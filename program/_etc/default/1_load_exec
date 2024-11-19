@@ -1,0 +1,42 @@
+#!/bin/bash
+
+
+### load
+## function
+function _eF_load_execNew () 
+{
+        ## argument
+        declare _ls_loadExec_name="${0##*/}" ;
+        ## export
+        declare -gx _es_loadExec_name="${_es_loadExec_name:-"${_ls_loadExec_name}"}" ;
+        declare -gx _es_loadExec_path="${_es_loadExec_path:-"${PATH}"}" ;
+        declare -gx _es_loadExec_type="${_es_loadExec_type:-"other"}" ;
+        declare -gx _es_loadExec_attr="${_es_loadExec_attr:-"0_main"}" ;
+}
+declare -fgxr "_eF_load_execNew"
+#       #
+function _eF_load_execBaseNew () 
+{
+        ## unset
+        unset -v "_ea_loadExec_base" ;
+        ## variable
+        declare -gxa "_ea_loadExec_base" ;
+        _ea_loadExec_base=(${@})
+}
+declare -fgxr "_eF_load_execBaseNew"
+#       #
+function _eF_load_execBaseUse () 
+{
+        ## variable
+        declare -i _li_loadExec_base="${#_ea_loadExec_base[@]}" ;
+        ## select
+        for (( _li_loop=0 ; _li_loop<${_li_loadExec_base} ; _li_loop++ )) ; do
+                declare _ls_loop="${_ea_loadExec_base[${_li_loop}]}" ;
+                #       #
+                if [[ "${_es_loadExec_name}" == "${_ls_loop}" ]] ; then
+                        return "1" ;
+                fi
+        done
+}
+declare -fgxr "_eF_load_execBaseUse"
+

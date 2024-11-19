@@ -1,0 +1,11 @@
+#!/bin/bash
+
+
+### init
+## unalias
+unalias -a
+
+## unset
+unset -f "declare"
+unset -f "function"
+
