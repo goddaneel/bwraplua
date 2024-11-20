@@ -51,8 +51,8 @@ _gb_execute_mode = false
 -- config
 --[[ Require and cover configure form main program path. +]]
 package.path = _ls_main_packpath
-if package.searchpath("bwraplua_conf", _ls_main_packpath) then
-        require("bwraplua_conf")
+if package.searchpath("bwraplua_init", _ls_main_packpath) then
+        require("bwraplua_init")
 end
 
 
@@ -83,10 +83,10 @@ local _ls_preload_data = ""
 local _ls_argload_data = ""
 --[[ Load package loop list (initialize). +]]
 local _l1_loadpack_listr = {
-        "bwraplua_conf",
+        "bwraplua_init",
 }
 local _l1_loadpack_listi = {
-        "bwraplua_conf",
+        "bwraplua_init",
 }
 local _l1_loadpack_listu = {
         false,
@@ -240,7 +240,7 @@ for _ln_i1,_ls_v1 in ipairs(_l1_argument) do
                 --[[ Print main program and configure, as help. +]]
                 os.execute(_l1_execute_cmd.s_show.._ls_main_path..[[/bwraplua.lua]])
                 print()
-                os.execute(_l1_execute_cmd.s_show.._ls_main_path..[[/bwraplua_conf.lua]])
+                os.execute(_l1_execute_cmd.s_show.._ls_main_path..[[/bwraplua_init.lua]])
                 os.exit()
         elseif (_l1_loop_status.s_args == ",,l") then
                 print()

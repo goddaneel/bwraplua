@@ -22,8 +22,6 @@ _g1_pack_data = {
         [[--ro-bind "/sys" "/sys"]],
         [[--ro-bind "/usr" "/usr"]],
         [[--ro-bind "/var" "/var"]],
-        [[--ro-bind "/_and" "/_and"]],
-        [[--ro-bind "/_end" "/_end"]],
         [[--symlink "/usr/bin" "/bin"]],
         [[--symlink "/usr/lib" "/lib"]],
         [[--symlink "/usr/lib64" "/lib64"]],
@@ -34,6 +32,5 @@ _g1_pack_data = {
         [[--bind "/media/${USER}" "/media/${USER}"]],
         [[--bind "${HOME}" "${HOME}"]],
         [[--bind "${XDG_RUNTIME_DIR}" "${XDG_RUNTIME_DIR}"]],
-        [[--bind "/_end/${USER}" "/_end/${USER}"]],
 }
 

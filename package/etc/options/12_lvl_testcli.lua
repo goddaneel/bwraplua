@@ -8,7 +8,7 @@ _gs_lastvar_exec = "testcli"
 
 -- list
 _g1_pack_listr = {
-        "01_configfo_bash",
-        "01_configfo_nvim",
+        "11_configfo_bash",
+        "11_configfo_nvim",
 }
 
