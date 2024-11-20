@@ -2,7 +2,7 @@
 
 -- path
 --[[ Package load path form configure. +]]
-_g1_loadpack_prepath = {
+_g1_loadpack_etcpath = {
         "/_and/config/bwraplua/options/?.lua",
         "/_end/"..os.getenv("USER").."/_0_config/bwraplua/options/?.lua",
 }
@@ -16,6 +16,6 @@ _g1_execute_cmd.s_list = [[exa --time-style=long-iso -Tlgha ]]
 --[[ Load package prelist form configure. +]]
 _gb_loadpack_prelist = true
 _g1_loadpack_prelistr = {
-        "00_main_pre",
+        "00_pre_lvl8",
 }
 

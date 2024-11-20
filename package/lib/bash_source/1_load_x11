@@ -30,6 +30,10 @@ function _eF_load_x11Call ()
                 "xephyr")
                         _eF_load_x11ServerXephyr ;
                         ;;
+                "xephyr_icewm")
+                        _eF_load_x11ServerXephyr ;
+                        _eF_load_x11WindowIcewm ;
+                        ;;
                 *)
                         declare -i _li_stat="1" ;
                         ;;
@@ -156,7 +160,11 @@ function _eF_load_x11WindowIcewm ()
         declare -a "_la_args_bwraplua"
         _la_args_bwraplua=(
                 ,q, ,c, ,y,
-                ,re "03_lvl8_icewm"
+                ,re "00_pre_lvl8"
+                ,r "01_devicefo_dri"
+                ,r "01_socketro_wayland"
+                ,r "01_configfo_icewm"
+                ,r "00_pre_lvl8"
                 ,o --setenv "${_es_loadX11_fullpath}" "${_es_loadX11_fullpath}"
                 ,o --setenv "DISPLAY" "${_es_loadX11_display}"
                 ,co '/usr/bin/icewm'

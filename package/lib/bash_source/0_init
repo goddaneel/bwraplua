@@ -3,10 +3,11 @@
 
 ### init
 ## environment
-declare -gxr _eS_bwraplua_init="/_and/config/bwraplua/default"
+test -d "${_eS_bwraplua_source}" -a -r "${_eS_bwraplua_source}" || exit
 
 ## source
-source "${_eS_bwraplua_init}/0_init_set" || exit
-source "${_eS_bwraplua_init}/0_init_env" || exit
-source "${_eS_bwraplua_init}/0_init_fun" || exit
+source "${_eS_bwraplua_source}/0_init_set" || exit
+source "${_eS_bwraplua_source}/../../etc/0_init_env" || exit
+source "${_eS_bwraplua_source}/0_init_var" || exit
+source "${_eS_bwraplua_source}/0_init_fun" || exit
 

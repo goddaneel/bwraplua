@@ -30,6 +30,10 @@ function _eF_main_bwraplua ()
                 _eF_load_initExitno "${?}" "ERROR" "Unavailable Name." ;
                 shift "1" ;
         fi
+        ## lock
+        _eF_load_lockCheck "${_es_loadExec_type}:${_es_loadExec_name}" "wait" "0" ;
+        _eF_load_initExitno "${?}" "WARNING" "Program is running."
+        _eF_load_lockStart "${_es_loadExec_type}:${_es_loadExec_name}" "tail" ;
         ## room
         _eF_load_roomCall ;
         ## lock

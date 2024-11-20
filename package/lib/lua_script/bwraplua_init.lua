@@ -1,21 +1,42 @@
 #!/bin/lua
 
+
+--- initialize
 -- path
+--[[ Initialize package path+]]
+package.path = nil
+
+-- conf
+--[[ Initialize etc path table.+]]
+_g1_loadpack_etcpath = {}
+--[[ Initialize etc path variable.+]]
+local _ls_loadpack_etcpath = nil
+
+
+--- configure
+-- require
+--[[ Set package path form init path.+]]
+package.path = _gs_main_path.."/../../etc/luainit/?.lua"
+if package.searchpath("bwraplua_conf", package.path) then
+        require("bwraplua_conf")
+end
+
+-- path
+-- [[ Package load ectpath form bwraplua_conf.+]]
+if (type(_g1_loadpack_etcpath) == "table") then
+        for _,_ls_v1 in ipairs(_g1_loadpack_etcpath) do
+                _ls_loadpack_etcpath = _ls_loadpack_etcpath.._ls_v1..";"
+        end
+end
 --[[ Package load path form configure. +]]
-_g1_loadpack_prepath = {
-        "/_and/config/bwraplua/options/?.lua",
-        "/_end/"..os.getenv("USER").."/_0_config/bwraplua/options/?.lua",
-}
-
--- exec
---[[ OS cli command form configure. +]]
-_g1_execute_cmd.s_show = [[batcat --style=default ]]
-_g1_execute_cmd.s_list = [[exa --time-style=long-iso -Tlgha ]]
-
--- list
---[[ Load package prelist form configure. +]]
-_gb_loadpack_prelist = true
-_g1_loadpack_prelistr = {
-        "00_main_pre",
-}
+if (_ls_loadpack_etcpath == nil) then
+        _g1_loadpack_prepath = {
+                _gs_main_path.."/../lua_option/?.lua",
+        }
+else
+        _g1_loadpack_prepath = {
+                _gs_main_path.."/../lua_option/?.lua",
+                _ls_loadpack_etcpath,
+        }
+end
 

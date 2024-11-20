@@ -11,6 +11,8 @@ local _ls_main_path = string.sub(_ls_popen_l1_read, 1, -2)
 local _ls_popen_l1_close = _ls_popen_l1:close()
 
 -- path
+--[[ Global share main path.+]]
+_gs_main_path = _ls_main_path
 --[[ Initialize package path. +]]
 package.path = nil
 --[[ Set package path form main path. +]]
