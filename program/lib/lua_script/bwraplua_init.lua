@@ -15,8 +15,10 @@ local _ls_loadpack_etcpath = nil
 
 --- configure
 -- require
+--[[ Set main package dirs.+]]
+_gs_main_dirs = _gs_main_path.."/../../"
 --[[ Set package path form init path.+]]
-package.path = _gs_main_path.."/../../etc/luainit/?.lua"
+package.path = _gs_main_dirs.."/etc/luainit/?.lua"
 if package.searchpath("bwraplua_conf", package.path) then
         require("bwraplua_conf")
 end

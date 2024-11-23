@@ -4,6 +4,5 @@
 ### init
 ## environment
 declare -gxr _eS_bwraplua_program="${_eS_bwraplua_source}/../../"
-declare -gxr _eS_bwraplua_lua="${_eS_bwraplua_source}../lua_script/bwraplua.lua"
 declare -gxr _eS_bwraplua_runtime="${XDG_RUNTIME_DIR}/_bwraplua"
 

@@ -3,6 +3,8 @@
 
 ### init
 ## environment
+declare -gxr "_eS_bwraplua_source"
+_eS_bwraplua_source="$('/usr/bin/realpath' -e "${BASH_SOURCE[0]}")"
 test -d "${_eS_bwraplua_source}" -a -r "${_eS_bwraplua_source}" || exit
 
 ## source
