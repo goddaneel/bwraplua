@@ -1,3 +1,3 @@
 # bwraplua
 
-一个基于 lua 脚本的简易 bwrap 配置管理工具。
+一个简易的 [Bubblewrap](https://github.com/containers/bubblewrap) 配置管理工具，基于 lua 和 bash。
