@@ -2,22 +2,29 @@
 define _ef_init_delete
 $(if $(wildcard $(1)), $(_es_init_delete) $(1))
 endef
+#	#
 
 
 ### env
 _es_init_delete ?= '/usr/bin/trash' -rv
-_es_init_dirmake ?= ./make
+_es_init_dirmake ?= ./make/
 
 
 ### var
-ifdef version
-	_gs_pack_version ?= v$(version)
+ifdef package
+	_gs_args_package ?= $(package)
 else
-	_gs_pack_version ?= u$(shell '/usr/bin/date' "+%s")
+	_gs_args_package ?= archive
 endif
 #	#
-_gs_pack_makedir ?= $(_es_init_dirmake)/$(_gs_pack_version)
-_gs_pack_archive ?= bwraplua_$(_gs_pack_version).tar.gz
+ifdef version
+	_gs_args_version ?= v$(version)
+else
+	_gs_args_version ?= u$(shell '/usr/bin/date' "+%s")
+endif
+#	#
+_gs_pack_makedir ?= $(_es_init_dirmake)/$(_gs_args_version)
+_gs_pack_archive ?= bwraplua_$(_gs_args_version).tar.gz
 
 
 ### opt
@@ -32,8 +39,7 @@ clean: _main_clean
 
 
 ### main
-.PHONY: _main_package
-_main_package: _load_useRmdir _load_useMkdir _load_useArchive
+.PHONY: _main_create
 
 .PHONY: _main_delete
 _main_delete: _load_useRmdir
@@ -54,7 +60,6 @@ _load_useMkdir:
 	'/usr/bin/mkdir' -v "$(_gs_pack_makedir)"
 
 .PHONY: _load_useArchive
-.ONESHELL:
 _load_useArchive:
 	'/usr/bin/tar' -cvf "$(_gs_pack_makedir)/$(_gs_pack_archive)" "./program"
 	cd "$(_gs_pack_makedir)"
